@@ -19,3 +19,20 @@ async function fetchInterpretation(id:string) {
     }
     
 }
+//delete specific interpretation
+
+async function deleteInterpretation(id:string) {
+    try {
+        const response= await database.deleteDocument(
+            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+            'interpretations',
+            id
+        )
+        return response
+        
+    } catch (error) {
+        console.error("error deleting interpretaion")
+        throw new Error("failed to delete interpretation")
+    }
+    
+}

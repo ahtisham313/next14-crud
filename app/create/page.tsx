@@ -15,6 +15,17 @@ e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 
     }))
   }
+
+  const handleSubmit= async(e: React.FormEvent)=>{
+    e.preventDefault();
+
+    if(!formData.term || !formData.interpretation){
+      setError("please fill in all fields");
+      return
+    }
+    setError(null);
+    setIsLoading(true);
+  }
   return (
     <div>
         <h1 className='font-bold text-2xl my-8'>

@@ -40,7 +40,7 @@ export default function Home() {
         try {
           await fetch(`/api/interpretations/${id}`,{method:"DELETE"});
           setInterpretations((prevInterpretations)=>
-            prevInterpretations?.filter((i)=> i.$id==id)
+            prevInterpretations?.filter((i)=> i.$id !==id)
         );
         } catch (error) {
           setError("failed to delete, plz try again")
@@ -77,7 +77,7 @@ export default function Home() {
       ):
       (
       <p>
-           No Interpretations Found.
+           No Innovations Found.
       </p>)
       
 }

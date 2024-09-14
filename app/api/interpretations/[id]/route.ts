@@ -12,10 +12,10 @@ async function fetchInterpretation(id:string) {
             process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
             'interpretations',
             id
-        )
+        );
         return interpretation;
     } catch (error) {
-        console.error("error fetching interpretaion")
+        console.error("error fetching interpretaion",error);
         throw new Error("failed to fetch interpretation")
     }
     
@@ -39,7 +39,7 @@ async function deleteInterpretation(id:string) {
 }
 //update specific interpretation
 
-async function updateInterpretation(id:string, data: { term:string, interpretaion: string}) {
+async function updateInterpretation(id:string, data: { term:string, interpretation: string}) {
     try {
         const response= await database.updateDocument(
             process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
@@ -60,9 +60,9 @@ export async function GET(req:Request,
     id:string
 }}) {
     try {
-        const id= params.id
+        const id= params.id;
         const interpretaion= await fetchInterpretation(id);
-        return NextResponse.json({interpretaion})
+        return NextResponse.json(interpretaion)
         
     } catch (error) {
         return NextResponse.json(
@@ -89,20 +89,17 @@ export async function DELETE(req:Request,
    }
 }
 
-export async function PUT(req:Request,
-    {params}:{params: {
-   id:string
-}}) {
-   try {
-       const id= params.id
-       const interpretaion= await req.json();
-       await updateInterpretation(id,interpretaion)
-       return NextResponse.json({message:"interpretation updated"})
-       
-   } catch (error) {
-       return NextResponse.json(
-           {error:"failed to update interpretation"},
-           {status:500}
-       )
-   }
-}
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+    try {
+      const id = params.id;
+      const { term, interpretation } = await req.json();  // Ensure that you're destructuring correctly here
+      await updateInterpretation(id, { term, interpretation });
+      return NextResponse.json({ message: "interpretation updated" });
+    } catch (error) {
+      return NextResponse.json(
+        { error: "failed to update interpretation" },
+        { status: 500 }
+      );
+    }
+  }
+  

@@ -1,10 +1,14 @@
 "use client";
+import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useState } from 'react'
+
 
 const CreatePage = () => {
   const [formData, setFormData]=useState({term:"" ,interpretation:""});
   const [isLoading, setIsLoading]=useState(false);
   const [error, setError]=useState<string | null> (null);
+
+const router=useRouter();
 
   const handleInputChange=(
 e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -25,14 +29,35 @@ e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     }
     setError(null);
     setIsLoading(true);
+
+    try {
+      const response=await fetch("/api/interpretations",{
+        method:"POST",
+        headers:{
+          "Content-type":"application/json",
+        },
+        body:JSON.stringify(formData),
+      })
+      if(!response.ok){
+        throw new Error("failed to create interpretation");
+      }
+      router.push("/");
+
+    } catch (error) {
+      console.log(error)
+      setError("something went wrong, please try again.")
+    }
+    finally{
+      setIsLoading(false);
+    }
   }
   return (
     <div>
         <h1 className='font-bold text-2xl my-8'>
-            Add New Interpretations
+            Add New Innovations
         </h1>
 
-        <form className='flex gap-3 flex-col'>
+        <form  onSubmit={handleSubmit} className='flex gap-3 flex-col'>
             <input 
             name='term' 
             type='text' 
@@ -43,8 +68,9 @@ e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
             />
             
             <textarea 
-            name='Interpretation'
-             placeholder='Interpretation' 
+            name='interpretation'
+          
+             placeholder='interpretation' 
              value={formData.interpretation}
              rows={4}
             className='py-1 px-4 rounded -md border resize-none '
@@ -56,7 +82,7 @@ e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
             type='submit'
             disabled={isLoading}
             >
-               {isLoading? "Adding...":"Add Interpretation"}
+               {isLoading? "Adding...":"Add Innovations"}
             </button>
         </form>
         {error && <p className='text-red-500 mt-4'>{error}</p>}
